@@ -1,1 +1,88 @@
+/* Global style */
+body {
+    background-color: #000000;
+    color: #00ff00;
+    font-family: "Courier New", Courier, monospace;
+    margin: 0;
+    padding: 20px;
+}
 
+/* Scanline effect (retro CRT) */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        rgba(0, 255, 0, 0.05) 0px,
+        rgba(0, 255, 0, 0.05) 1px,
+        transparent 1px,
+        transparent 3px
+    );
+    pointer-events: none;
+}
+
+/* Title glitch effect */
+h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    text-shadow: 0 0 10px #00ff00;
+}
+
+/* Sections like terminal boxes */
+section {
+    border: 1px solid #00ff00;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 0 10px #00ff00;
+}
+
+/* Inputs */
+input {
+    background-color: black;
+    border: 1px solid #00ff00;
+    color: #00ff00;
+    padding: 5px;
+    font-family: inherit;
+}
+
+/* Buttons */
+button {
+    background-color: black;
+    color: #00ff00;
+    border: 1px solid #00ff00;
+    padding: 10px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s ease;
+}
+
+/* Hover effect */
+button:hover {
+    background-color: #00ff00;
+    color: black;
+    box-shadow: 0 0 10px #00ff00;
+}
+
+/* Text output */
+p {
+    text-shadow: 0 0 5px #00ff00;
+}
+
+/* List */
+ul {
+    list-style-type: "> ";
+}
+
+/* Flicker animation */
+@keyframes flicker {
+    0% { opacity: 0.9; }
+    50% { opacity: 1; }
+    100% { opacity: 0.95; }
+}
+
+body {
+    animation: flicker 0.15s infinite;
+}

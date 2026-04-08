@@ -1,1 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Energy Saving Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
 
+    <h1>Energy Saving Calculator 🌍</h1>
+
+    <section>
+        <h2>Select Date Range</h2>
+        <input type="date" id="startDate">
+        <input type="date" id="endDate">
+        <button onclick="calculate()">Calculate</button>
+    </section>
+
+    <section>
+        <h2>Results</h2>
+        <p id="electricity"></p>
+        <p id="water"></p>
+        <p id="office"></p>
+        <p id="cleaning"></p>
+    </section>
+
+    <section>
+        <h2>Recommendations</h2>
+        <ul>
+            <li>Reduce energy usage by turning off unused devices</li>
+            <li>Optimize water consumption systems</li>
+            <li>Reduce paper usage (digitalization)</li>
+            <li>Use eco-friendly cleaning products</li>
+        </ul>
+    </section>
+
+<script>
+let data = [];
+
+async function loadData() {
+    const response = await fetch("dataclean.json");
+    const json = await response.json();
+    data = json.documents;
+}
+
+function filterByDate(start, end) {
+    return data.filter(d => {
+        if (!d.date) return false;
+        return d.date >= start && d.date <= end;
+    });
+}
+
+function calculate() {
+    const start = document.getElementById("startDate").value;
+    const end = document.getElementById("endDate").value;
+
+    const filtered = filterByDate(start, end);
+
+    let electricity = 0;
+    let water = 0;
+    let office = 0;
+    let cleaning = 0;
+
+    filtered.forEach(d => {
+        if (d.category === "office_supplies") {
+            office += d.total_amount || 0;
+        }
+        if (d.category === "cleaning") {
+            cleaning += d.total_amount || 0;
+        }
+        if (d.document_type === "water_consumption") {
+            water += d.average_consumption_liters || 0;
+        }
+        if (d.document_type === "energy_report") {
+            electricity += d.total_consumption_kwh || 0;
+        }
+    });
+
+    document.getElementById("electricity").innerText =
+        "Electricity consumption: " + electricity.toFixed(2) + " kWh";
+
+    document.getElementById("water").innerText =
+        "Water consumption: " + water.toFixed(2) + " liters";
+
+    document.getElementById("office").innerText =
+        "Office supplies cost: €" + office.toFixed(2);
+
+    document.getElementById("cleaning").innerText =
+        "Cleaning cost: €" + cleaning.toFixed(2);
+}
+
+loadData();
+</script>
+
+</body>
+</html>
