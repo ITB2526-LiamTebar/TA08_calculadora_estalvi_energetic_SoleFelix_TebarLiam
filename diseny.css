@@ -15,13 +15,34 @@ body {
   min-height: 100vh;
 }
 
-/* LEFT */
+/* LEFT PANEL */
 .left {
   width: 260px;
   padding: 25px;
   background: rgba(15,23,42,0.7);
 }
 
+.left h1 {
+  font-size: 32px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #22c55e, #38bdf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 20px;
+}
+
+.file {
+  font-size: 13px;
+  color: #94a3b8;
+  margin-bottom: 10px;
+}
+
+/* BUTTONS */
 button {
   width: 100%;
   padding: 10px;
@@ -32,7 +53,7 @@ button {
   cursor: pointer;
 }
 
-/* RIGHT GRID */
+/* GRID */
 .right {
   flex: 1;
   padding: 25px;
@@ -47,17 +68,35 @@ button {
   padding: 16px;
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  position: relative;
+  overflow: hidden;
 }
 
 .card h2 {
   font-size: 13px;
   color: #94a3b8;
+  display: flex;
+  gap: 6px;
 }
 
 .card p {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: bold;
   color: #22c55e;
+}
+
+/* subtle glow */
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, rgba(56,189,248,0.15), transparent);
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.card:hover::after {
+  opacity: 1;
 }
 
 /* GRID CONTROL */
@@ -70,9 +109,9 @@ button {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding: 20px;
 }
 
-/* IMPORTANT FIX → no forced stretching */
 .chart-card canvas {
   max-height: 260px;
 }
@@ -98,64 +137,4 @@ button {
 
 .hidden {
   display: none;
-}
-/* 🔥 TITLE UPGRADE */
-.left h1 {
-  font-size: 32px;
-  font-weight: 700;
-  line-height: 1.2;
-  margin-bottom: 10px;
-
-  background: linear-gradient(90deg, #22c55e, #38bdf8);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* subtitle */
-.left p strong {
-  color: #94a3b8;
-  font-size: 13px;
-}
-
-/* ✨ CARD IMPROVEMENTS */
-.card {
-  position: relative;
-  overflow: hidden;
-}
-
-/* subtle glow */
-.card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at top right, rgba(56,189,248,0.15), transparent);
-  opacity: 0;
-  transition: 0.3s;
-}
-
-.card:hover::after {
-  opacity: 1;
-}
-
-/* 🧠 add small icon space */
-.card h2 {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-/* 📊 chart titles spacing */
-.chart-card h2 {
-  margin-bottom: 10px;
-}
-
-/* ✨ make values pop */
-.card p {
-  font-size: 22px;
-  letter-spacing: 0.5px;
-}
-
-/* 📦 reduce empty feeling */
-.chart-card {
-  padding: 20px;
 }
