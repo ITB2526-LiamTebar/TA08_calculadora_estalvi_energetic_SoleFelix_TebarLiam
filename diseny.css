@@ -15,47 +15,89 @@ body {
   min-height: 100vh;
 }
 
+/* LEFT */
 .left {
   width: 260px;
   padding: 25px;
   background: rgba(15,23,42,0.7);
 }
 
-.right {
-  flex: 1;
-  padding: 25px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
-  gap: 20px;
-}
-
-.card {
-  background: rgba(15,23,42,0.6);
-  padding: 18px;
-  border-radius: 12px;
-}
-
-.card h2 {
-  font-size: 14px;
-  color: #94a3b8;
-}
-
-.card p {
-  font-size: 22px;
-  font-weight: bold;
-  color: #22c55e;
+.left h1 {
+  margin-bottom: 15px;
 }
 
 button {
   width: 100%;
   padding: 10px;
   margin-top: 10px;
-  background: #22c55e;
   border: none;
   border-radius: 6px;
+  background: #22c55e;
   cursor: pointer;
+}
+
+/* RIGHT GRID */
+.right {
+  flex: 1;
+  padding: 25px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 20px;
+}
+
+/* CARDS */
+.card {
+  background: rgba(15,23,42,0.6);
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.card h2 {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.card p {
+  font-size: 20px;
+  font-weight: bold;
+  color: #22c55e;
+}
+
+/* GRID CONTROL */
+.card:nth-child(-n+6) {
+  grid-column: span 1;
+}
+
+.chart-card {
+  grid-column: span 3;
+}
+
+/* CHART SIZE */
+canvas {
+  width: 100% !important;
+  height: 260px !important;
 }
 
 .hidden {
   display: none;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .right {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .chart-card {
+    grid-column: span 2;
+  }
+
+  .left {
+    width: 100%;
+  }
+
+  .container {
+    flex-direction: column;
+  }
 }
