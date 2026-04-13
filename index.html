@@ -1,144 +1,159 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Energy Calculator</title>
+  <title>Energy Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- CSS -->
   <link rel="stylesheet" href="diseny.css">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
 
 <div class="container">
 
   <!-- LEFT PANEL -->
-
   <div class="left">
-    <h1>⚡ Energy Calculator</h1>
+    <h1>⚡ Energy Dashboard</h1>
 
-```
-<p><strong>Loaded file:</strong></p>
-<p class="file">dataclean.json</p>
+    <p><strong>Loaded file:</strong></p>
+    <p class="file">dataclean.json</p>
 
-<button onclick="loadData()">Run Calculation</button>
-<button onclick="toggleInstructions()">JSON Instructions</button>
+    <button onclick="loadData()">Run Calculation</button>
+    <button onclick="toggleInstructions()">JSON Instructions</button>
 
-<div id="instructions" class="hidden">
-  <h3>Required JSON Structure</h3>
-  <pre>
-```
-
+    <div id="instructions" class="hidden">
+      <h3>Required JSON</h3>
+      <pre>
 {
-"documents": [
-{
-"document_type": "energy_report",
-"total_consumption_kwh": number
-},
-{
-"document_type": "water_consumption",
-"average_consumption_liters": number
-},
-{
-"category": "office_supplies",
-"total_amount": number
-},
-{
-"category": "cleaning",
-"total_amount": number
+  "documents": [
+    { "document_type": "energy_report", "total_consumption_kwh": number },
+    { "document_type": "water_consumption", "average_consumption_liters": number },
+    { "category": "office_supplies", "total_amount": number },
+    { "category": "cleaning", "total_amount": number }
+  ]
 }
-]
-} </pre> </div>
-
+      </pre>
+    </div>
   </div>
 
   <!-- RIGHT PANEL -->
-
   <div class="right">
 
-```
-<div class="card">
-  <h2>Electric Consumption (Next Year)</h2>
-  <p id="electricYear">-</p>
-  <small>💡 Optimize equipment and avoid idle consumption.</small>
-</div>
+    <div class="card">
+      <h2>Electric (Year)</h2>
+      <p id="electricYear">-</p>
+    </div>
 
-<div class="card">
-  <h2>Electric Consumption (Period)</h2>
-  <p id="electricPeriod">-</p>
-  <small>💡 Reduce usage during peak demand hours.</small>
-</div>
+    <div class="card">
+      <h2>Electric (Period)</h2>
+      <p id="electricPeriod">-</p>
+    </div>
 
-<div class="card">
-  <h2>Water Consumption (Next Year)</h2>
-  <p id="waterYear">-</p>
-  <small>💡 Install efficient faucets and monitor leaks.</small>
-</div>
+    <div class="card">
+      <h2>Water (Year)</h2>
+      <p id="waterYear">-</p>
+    </div>
 
-<div class="card">
-  <h2>Water Consumption (Period)</h2>
-  <p id="waterPeriod">-</p>
-  <small>💡 Track daily usage to detect anomalies.</small>
-</div>
+    <div class="card">
+      <h2>Water (Period)</h2>
+      <p id="waterPeriod">-</p>
+    </div>
 
-<div class="card">
-  <h2>Office Supplies Consumption</h2>
-  <p id="officeYear">-</p>
-  <small>💡 Move to digital workflows to reduce materials.</small>
-</div>
+    <div class="card">
+      <h2>Office Supplies</h2>
+      <p id="officeYear">-</p>
+    </div>
 
-<div class="card">
-  <h2>Cleaning Products Consumption</h2>
-  <p id="cleaningYear">-</p>
-  <small>💡 Use concentrated and eco-friendly products.</small>
-</div>
-```
+    <div class="card">
+      <h2>Cleaning</h2>
+      <p id="cleaningYear">-</p>
+    </div>
+
+    <!-- CHARTS -->
+    <div class="card">
+      <h2>Consumption Overview</h2>
+      <canvas id="energyChart"></canvas>
+    </div>
+
+    <div class="card">
+      <h2>Expenses Distribution</h2>
+      <canvas id="expenseChart"></canvas>
+    </div>
 
   </div>
-
 </div>
 
 <script>
+let energyChart, expenseChart;
+
 async function loadData() {
   try {
     const res = await fetch("dataclean.json");
     const data = await res.json();
     const docs = data.documents;
 
-    // ENERGY
     const energy = docs.filter(d => d.document_type === "energy_report");
     let totalEnergy = energy.reduce((sum, e) => sum + (e.total_consumption_kwh || 0), 0);
 
-    document.getElementById("electricYear").textContent = totalEnergy.toFixed(2) + " kWh";
-    document.getElementById("electricPeriod").textContent = (totalEnergy / 2).toFixed(2) + " kWh";
-
-    // WATER
     const water = docs.filter(d => d.document_type === "water_consumption");
     let totalWater = water.reduce((sum, w) => sum + (w.average_consumption_liters || 0), 0);
 
-    document.getElementById("waterYear").textContent = totalWater + " L";
-    document.getElementById("waterPeriod").textContent = (totalWater / 2).toFixed(0) + " L";
-
-    // OFFICE SUPPLIES
     const office = docs.filter(d => d.category === "office_supplies");
     let officeTotal = office.reduce((sum, o) => sum + (o.total_amount || 0), 0);
 
-    document.getElementById("officeYear").textContent = "€" + officeTotal.toFixed(2);
-
-    // CLEANING
     const cleaning = docs.filter(d => d.category === "cleaning");
     let cleaningTotal = cleaning.reduce((sum, c) => sum + (c.total_amount || 0), 0);
 
+    document.getElementById("electricYear").textContent = totalEnergy.toFixed(2) + " kWh";
+    document.getElementById("electricPeriod").textContent = (totalEnergy / 2).toFixed(2) + " kWh";
+    document.getElementById("waterYear").textContent = totalWater + " L";
+    document.getElementById("waterPeriod").textContent = (totalWater / 2).toFixed(0) + " L";
+    document.getElementById("officeYear").textContent = "€" + officeTotal.toFixed(2);
     document.getElementById("cleaningYear").textContent = "€" + cleaningTotal.toFixed(2);
 
+    renderCharts(totalEnergy, totalWater, officeTotal, cleaningTotal);
+
   } catch (error) {
-    alert("Error loading dataclean.json");
+    alert("Error loading JSON");
     console.error(error);
   }
 }
 
+function renderCharts(energy, water, office, cleaning) {
+  if (energyChart) energyChart.destroy();
+  if (expenseChart) expenseChart.destroy();
+
+  energyChart = new Chart(document.getElementById("energyChart"), {
+    type: "bar",
+    data: {
+      labels: ["Energy", "Water"],
+      datasets: [{
+        data: [energy, water],
+        backgroundColor: ["#22c55e", "#38bdf8"]
+      }]
+    },
+    options: { plugins: { legend: { display: false } } }
+  });
+
+  expenseChart = new Chart(document.getElementById("expenseChart"), {
+    type: "doughnut",
+    data: {
+      labels: ["Office", "Cleaning"],
+      datasets: [{
+        data: [office, cleaning],
+        backgroundColor: ["#facc15", "#f472b6"]
+      }]
+    }
+  });
+}
+
 function toggleInstructions() {
-  const el = document.getElementById("instructions");
-  el.classList.toggle("hidden");
+  document.getElementById("instructions").classList.toggle("hidden");
 }
 </script>
 
