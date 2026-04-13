@@ -97,25 +97,33 @@ async function loadData() {
     const data = await res.json();
     const docs = data.documents;
 
+    // 🔌 ENERGY (only 1 entry in your JSON)
     const energy = docs.filter(d => d.document_type === "energy_report");
     let totalEnergy = energy.reduce((sum, e) => sum + (e.total_consumption_kwh || 0), 0);
 
+    // 💧 WATER (multiple entries → sum)
     const water = docs.filter(d => d.document_type === "water_consumption");
     let totalWater = water.reduce((sum, w) => sum + (w.average_consumption_liters || 0), 0);
 
+    // 🧾 OFFICE SUPPLIES
     const office = docs.filter(d => d.category === "office_supplies");
     let officeTotal = office.reduce((sum, o) => sum + (o.total_amount || 0), 0);
 
+    // 🧼 CLEANING
     const cleaning = docs.filter(d => d.category === "cleaning");
     let cleaningTotal = cleaning.reduce((sum, c) => sum + (c.total_amount || 0), 0);
 
+    // 📊 UI UPDATE
     document.getElementById("electricYear").textContent = totalEnergy.toFixed(2) + " kWh";
     document.getElementById("electricPeriod").textContent = (totalEnergy / 2).toFixed(2) + " kWh";
+
     document.getElementById("waterYear").textContent = totalWater + " L";
     document.getElementById("waterPeriod").textContent = (totalWater / 2).toFixed(0) + " L";
+
     document.getElementById("officeYear").textContent = "€" + officeTotal.toFixed(2);
     document.getElementById("cleaningYear").textContent = "€" + cleaningTotal.toFixed(2);
 
+    // 📈 CHARTS
     renderCharts(totalEnergy, totalWater, officeTotal, cleaningTotal);
 
   } catch (error) {
@@ -125,21 +133,26 @@ async function loadData() {
 }
 
 function renderCharts(energy, water, office, cleaning) {
+
   if (energyChart) energyChart.destroy();
   if (expenseChart) expenseChart.destroy();
 
+  // 📊 BAR (Energy vs Water)
   energyChart = new Chart(document.getElementById("energyChart"), {
     type: "bar",
     data: {
-      labels: ["Energy", "Water"],
+      labels: ["Energy (kWh)", "Water (L)"],
       datasets: [{
         data: [energy, water],
         backgroundColor: ["#22c55e", "#38bdf8"]
       }]
     },
-    options: { plugins: { legend: { display: false } } }
+    options: {
+      plugins: { legend: { display: false } }
+    }
   });
 
+  // 🍩 DOUGHNUT (Expenses)
   expenseChart = new Chart(document.getElementById("expenseChart"), {
     type: "doughnut",
     data: {
@@ -156,6 +169,5 @@ function toggleInstructions() {
   document.getElementById("instructions").classList.toggle("hidden");
 }
 </script>
-
 </body>
 </html>
