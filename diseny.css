@@ -22,10 +22,6 @@ body {
   background: rgba(15,23,42,0.7);
 }
 
-.left h1 {
-  margin-bottom: 15px;
-}
-
 button {
   width: 100%;
   padding: 10px;
@@ -71,16 +67,14 @@ button {
 
 .chart-card {
   grid-column: span 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-/* CHART SIZE */
-canvas {
-  width: 100% !important;
-  height: 260px !important;
-}
-
-.hidden {
-  display: none;
+/* IMPORTANT FIX → no forced stretching */
+.chart-card canvas {
+  max-height: 260px;
 }
 
 /* RESPONSIVE */
@@ -93,11 +87,15 @@ canvas {
     grid-column: span 2;
   }
 
-  .left {
-    width: 100%;
-  }
-
   .container {
     flex-direction: column;
   }
+
+  .left {
+    width: 100%;
+  }
+}
+
+.hidden {
+  display: none;
 }
