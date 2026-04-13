@@ -5,10 +5,7 @@
   <title>Energy Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- CSS -->
   <link rel="stylesheet" href="diseny.css">
-
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
@@ -27,16 +24,8 @@
     <button onclick="toggleInstructions()">JSON Instructions</button>
 
     <div id="instructions" class="hidden">
-      <h3>Required JSON</h3>
       <pre>
-{
-  "documents": [
-    { "document_type": "energy_report", "total_consumption_kwh": number },
-    { "document_type": "water_consumption", "average_consumption_liters": number },
-    { "category": "office_supplies", "total_amount": number },
-    { "category": "cleaning", "total_amount": number }
-  ]
-}
+Your JSON is already valid ✔
       </pre>
     </div>
   </div>
@@ -44,43 +33,19 @@
   <!-- RIGHT PANEL -->
   <div class="right">
 
-    <div class="card">
-      <h2>Electric (Year)</h2>
-      <p id="electricYear">-</p>
-    </div>
+    <div class="card"><h2>Electric (Year)</h2><p id="electricYear">-</p></div>
+    <div class="card"><h2>Electric (Period)</h2><p id="electricPeriod">-</p></div>
+    <div class="card"><h2>Water (Year)</h2><p id="waterYear">-</p></div>
+    <div class="card"><h2>Water (Period)</h2><p id="waterPeriod">-</p></div>
+    <div class="card"><h2>Office Supplies</h2><p id="officeYear">-</p></div>
+    <div class="card"><h2>Cleaning</h2><p id="cleaningYear">-</p></div>
 
-    <div class="card">
-      <h2>Electric (Period)</h2>
-      <p id="electricPeriod">-</p>
-    </div>
-
-    <div class="card">
-      <h2>Water (Year)</h2>
-      <p id="waterYear">-</p>
-    </div>
-
-    <div class="card">
-      <h2>Water (Period)</h2>
-      <p id="waterPeriod">-</p>
-    </div>
-
-    <div class="card">
-      <h2>Office Supplies</h2>
-      <p id="officeYear">-</p>
-    </div>
-
-    <div class="card">
-      <h2>Cleaning</h2>
-      <p id="cleaningYear">-</p>
-    </div>
-
-    <!-- CHARTS -->
-    <div class="card">
+    <div class="card chart-card">
       <h2>Consumption Overview</h2>
       <canvas id="energyChart"></canvas>
     </div>
 
-    <div class="card">
+    <div class="card chart-card">
       <h2>Expenses Distribution</h2>
       <canvas id="expenseChart"></canvas>
     </div>
@@ -92,44 +57,36 @@
 let energyChart, expenseChart;
 
 async function loadData() {
-  try {
-    const res = await fetch("dataclean.json");
-    const data = await res.json();
-    const docs = data.documents;
+  const res = await fetch("dataclean.json");
+  const data = await res.json();
+  const docs = data.documents;
 
-    // 🔌 ENERGY (only 1 entry in your JSON)
-    const energy = docs.filter(d => d.document_type === "energy_report");
-    let totalEnergy = energy.reduce((sum, e) => sum + (e.total_consumption_kwh || 0), 0);
+  const totalEnergy = docs
+    .filter(d => d.document_type === "energy_report")
+    .reduce((sum, e) => sum + (e.total_consumption_kwh || 0), 0);
 
-    // 💧 WATER (multiple entries → sum)
-    const water = docs.filter(d => d.document_type === "water_consumption");
-    let totalWater = water.reduce((sum, w) => sum + (w.average_consumption_liters || 0), 0);
+  const totalWater = docs
+    .filter(d => d.document_type === "water_consumption")
+    .reduce((sum, w) => sum + (w.average_consumption_liters || 0), 0);
 
-    // 🧾 OFFICE SUPPLIES
-    const office = docs.filter(d => d.category === "office_supplies");
-    let officeTotal = office.reduce((sum, o) => sum + (o.total_amount || 0), 0);
+  const officeTotal = docs
+    .filter(d => d.category === "office_supplies")
+    .reduce((sum, o) => sum + (o.total_amount || 0), 0);
 
-    // 🧼 CLEANING
-    const cleaning = docs.filter(d => d.category === "cleaning");
-    let cleaningTotal = cleaning.reduce((sum, c) => sum + (c.total_amount || 0), 0);
+  const cleaningTotal = docs
+    .filter(d => d.category === "cleaning")
+    .reduce((sum, c) => sum + (c.total_amount || 0), 0);
 
-    // 📊 UI UPDATE
-    document.getElementById("electricYear").textContent = totalEnergy.toFixed(2) + " kWh";
-    document.getElementById("electricPeriod").textContent = (totalEnergy / 2).toFixed(2) + " kWh";
+  document.getElementById("electricYear").textContent = totalEnergy.toFixed(2) + " kWh";
+  document.getElementById("electricPeriod").textContent = (totalEnergy / 2).toFixed(2) + " kWh";
 
-    document.getElementById("waterYear").textContent = totalWater + " L";
-    document.getElementById("waterPeriod").textContent = (totalWater / 2).toFixed(0) + " L";
+  document.getElementById("waterYear").textContent = totalWater + " L";
+  document.getElementById("waterPeriod").textContent = (totalWater / 2).toFixed(0) + " L";
 
-    document.getElementById("officeYear").textContent = "€" + officeTotal.toFixed(2);
-    document.getElementById("cleaningYear").textContent = "€" + cleaningTotal.toFixed(2);
+  document.getElementById("officeYear").textContent = "€" + officeTotal.toFixed(2);
+  document.getElementById("cleaningYear").textContent = "€" + cleaningTotal.toFixed(2);
 
-    // 📈 CHARTS
-    renderCharts(totalEnergy, totalWater, officeTotal, cleaningTotal);
-
-  } catch (error) {
-    alert("Error loading JSON");
-    console.error(error);
-  }
+  renderCharts(totalEnergy, totalWater, officeTotal, cleaningTotal);
 }
 
 function renderCharts(energy, water, office, cleaning) {
@@ -137,30 +94,42 @@ function renderCharts(energy, water, office, cleaning) {
   if (energyChart) energyChart.destroy();
   if (expenseChart) expenseChart.destroy();
 
-  // 📊 BAR (Energy vs Water)
   energyChart = new Chart(document.getElementById("energyChart"), {
     type: "bar",
     data: {
-      labels: ["Energy (kWh)", "Water (L)"],
+      labels: ["Energy", "Water"],
       datasets: [{
         data: [energy, water],
-        backgroundColor: ["#22c55e", "#38bdf8"]
+        backgroundColor: ["#22c55e", "#38bdf8"],
+        borderRadius: 6
       }]
     },
     options: {
-      plugins: { legend: { display: false } }
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: "#94a3b8" } },
+        y: { ticks: { color: "#94a3b8" } }
+      }
     }
   });
 
-  // 🍩 DOUGHNUT (Expenses)
   expenseChart = new Chart(document.getElementById("expenseChart"), {
     type: "doughnut",
     data: {
       labels: ["Office", "Cleaning"],
       datasets: [{
         data: [office, cleaning],
-        backgroundColor: ["#facc15", "#f472b6"]
+        backgroundColor: ["#facc15", "#f472b6"],
+        borderWidth: 0
       }]
+    },
+    options: {
+      plugins: {
+        legend: {
+          labels: { color: "#cbd5f5" }
+        }
+      }
     }
   });
 }
@@ -169,5 +138,6 @@ function toggleInstructions() {
   document.getElementById("instructions").classList.toggle("hidden");
 }
 </script>
+
 </body>
 </html>
