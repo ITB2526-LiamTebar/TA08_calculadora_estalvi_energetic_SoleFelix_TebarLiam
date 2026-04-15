@@ -1,3 +1,4 @@
+/* RESET */
 * {
   margin: 0;
   padding: 0;
@@ -10,15 +11,18 @@ body {
   color: #e2e8f0;
 }
 
+/* LAYOUT */
 .container {
   display: flex;
   min-height: 100vh;
 }
 
+/* LEFT PANEL */
 .left {
   width: 260px;
   padding: 25px;
   background: rgba(15,23,42,0.75);
+  border-right: 1px solid rgba(255,255,255,0.05);
 }
 
 .left h1 {
@@ -52,6 +56,7 @@ button {
   cursor: pointer;
 }
 
+/* GRID */
 .right {
   flex: 1;
   padding: 25px;
@@ -60,6 +65,7 @@ button {
   gap: 20px;
 }
 
+/* CARDS */
 .card {
   background: rgba(15,23,42,0.6);
   padding: 20px;
@@ -89,6 +95,7 @@ button {
   color: #94a3b8;
 }
 
+/* GRID CONTROL */
 .card:nth-child(-n+6) {
   grid-column: span 1;
 }
@@ -99,16 +106,13 @@ button {
 
 .chart-card canvas {
   max-height: 260px;
+  width: 100%;
 }
 
-@media (max-width: 900px) {
-  .right {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .chart-card {
-    grid-column: span 2;
-  }
+/* ========================= */
+/* 📱 TABLET (<= 1024px) */
+/* ========================= */
+@media (max-width: 1024px) {
 
   .container {
     flex-direction: column;
@@ -116,5 +120,69 @@ button {
 
   .left {
     width: 100%;
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .right {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .card:nth-child(-n+6) {
+    grid-column: span 1;
+  }
+
+  .chart-card {
+    grid-column: span 3;
+  }
+}
+
+/* ========================= */
+/* 📱 MOBILE (<= 768px) */
+/* ========================= */
+@media (max-width: 768px) {
+
+  .right {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    padding: 15px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .card p {
+    font-size: 22px;
+  }
+
+  .chart-card {
+    grid-column: span 2;
+  }
+
+  .left h1 {
+    font-size: 26px;
+  }
+}
+
+/* ========================= */
+/* 📱 SMALL MOBILE (<= 480px) */
+/* ========================= */
+@media (max-width: 480px) {
+
+  .right {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-card {
+    grid-column: span 1;
+  }
+
+  .card p {
+    font-size: 20px;
+  }
+
+  button {
+    font-size: 14px;
   }
 }
