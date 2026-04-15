@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Energy Dashboard</title>
+  <title>Smart Energy Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link rel="stylesheet" href="diseny.css">
@@ -16,20 +16,12 @@
   <!-- LEFT -->
   <div class="left">
     <h1>⚡ Energy Dashboard</h1>
-
-    <p class="subtitle">
-      Monitor consumption, costs and efficiency in real time
-    </p>
+    <p class="subtitle">Monitor consumption and efficiency</p>
 
     <p><strong>Loaded file:</strong></p>
     <p class="file">dataclean.json</p>
 
-    <button onclick="loadData()">Run Calculation</button>
-    <button onclick="toggleInstructions()">JSON Instructions</button>
-
-    <div id="instructions" class="hidden">
-      <pre>Your JSON is already valid ✔</pre>
-    </div>
+    <button onclick="loadData()">Run Analysis</button>
   </div>
 
   <!-- RIGHT -->
@@ -44,6 +36,7 @@
     <div class="card">
       <h2>⚡ Electric (Period)</h2>
       <p id="electricPeriod">-</p>
+      <small id="recEnergyPeriod"></small>
     </div>
 
     <div class="card">
@@ -55,6 +48,7 @@
     <div class="card">
       <h2>💧 Water (Period)</h2>
       <p id="waterPeriod">-</p>
+      <small id="recWaterPeriod"></small>
     </div>
 
     <div class="card">
@@ -70,12 +64,12 @@
     </div>
 
     <div class="card chart-card">
-      <h2>Consumption Overview</h2>
+      <h2>📊 Consumption Overview</h2>
       <canvas id="energyChart"></canvas>
     </div>
 
     <div class="card chart-card">
-      <h2>Expenses Distribution</h2>
+      <h2>📊 Expenses Distribution</h2>
       <canvas id="expenseChart"></canvas>
     </div>
 
@@ -90,61 +84,52 @@ async function loadData() {
   const data = await res.json();
   const docs = data.documents;
 
-  const totalEnergy = docs
-    .filter(d => d.document_type === "energy_report")
+  const totalEnergy = docs.filter(d => d.document_type === "energy_report")
     .reduce((sum, e) => sum + (e.total_consumption_kwh || 0), 0);
 
-  const totalWater = docs
-    .filter(d => d.document_type === "water_consumption")
+  const totalWater = docs.filter(d => d.document_type === "water_consumption")
     .reduce((sum, w) => sum + (w.average_consumption_liters || 0), 0);
 
-  const officeTotal = docs
-    .filter(d => d.category === "office_supplies")
+  const officeTotal = docs.filter(d => d.category === "office_supplies")
     .reduce((sum, o) => sum + (o.total_amount || 0), 0);
 
-  const cleaningTotal = docs
-    .filter(d => d.category === "cleaning")
+  const cleaningTotal = docs.filter(d => d.category === "cleaning")
     .reduce((sum, c) => sum + (c.total_amount || 0), 0);
 
-  // UI values
-  document.getElementById("electricYear").textContent = totalEnergy.toFixed(2) + " kWh";
-  document.getElementById("electricPeriod").textContent = (totalEnergy / 2).toFixed(2) + " kWh";
+  // DISPLAY
+  electricYear.textContent = totalEnergy.toFixed(2) + " kWh";
+  electricPeriod.textContent = (totalEnergy / 2).toFixed(2) + " kWh";
 
-  document.getElementById("waterYear").textContent = totalWater + " L";
-  document.getElementById("waterPeriod").textContent = (totalWater / 2).toFixed(0) + " L";
+  waterYear.textContent = totalWater + " L";
+  waterPeriod.textContent = (totalWater / 2).toFixed(0) + " L";
 
-  document.getElementById("officeYear").textContent = "€" + officeTotal.toFixed(2);
-  document.getElementById("cleaningYear").textContent = "€" + cleaningTotal.toFixed(2);
+  officeYear.textContent = "€" + officeTotal.toFixed(2);
+  cleaningYear.textContent = "€" + cleaningTotal.toFixed(2);
 
-  // 🔥 RECOMMENDATIONS
+  // RECOMMENDATIONS
+  recEnergy.textContent = totalEnergy > 500
+    ? "⚠️ Reduce energy usage"
+    : "✅ Efficient energy use";
 
-  document.getElementById("recEnergy").textContent =
-    totalEnergy > 500
-      ? "⚠️ High consumption: optimize equipment and reduce idle usage."
-      : totalEnergy > 200
-      ? "⚡ Moderate usage: consider LED lighting and smart scheduling."
-      : "✅ Efficient energy use.";
+  recEnergyPeriod.textContent = (totalEnergy/2) > 250
+    ? "⚠️ High short-term usage"
+    : "✅ Stable consumption";
 
-  document.getElementById("recWater").textContent =
-    totalWater > 1000
-      ? "⚠️ High water use: check leaks and install efficient taps."
-      : totalWater > 500
-      ? "💧 Moderate usage: monitor daily patterns."
-      : "✅ Good water efficiency.";
+  recWater.textContent = totalWater > 1000
+    ? "⚠️ Reduce water usage"
+    : "✅ Efficient usage";
 
-  document.getElementById("recOffice").textContent =
-    officeTotal > 1000
-      ? "⚠️ High spending: move to digital workflows."
-      : officeTotal > 500
-      ? "📦 Moderate spending: optimize purchasing."
-      : "✅ Efficient office supply usage.";
+  recWaterPeriod.textContent = (totalWater/2) > 500
+    ? "⚠️ Monitor short-term usage"
+    : "✅ Controlled usage";
 
-  document.getElementById("recCleaning").textContent =
-    cleaningTotal > 1000
-      ? "⚠️ High cost: consider eco bulk products."
-      : cleaningTotal > 500
-      ? "🧼 Moderate cost: review supplier efficiency."
-      : "✅ Cleaning costs are well optimized.";
+  recOffice.textContent = officeTotal > 1000
+    ? "⚠️ Reduce office expenses"
+    : "✅ Controlled spending";
+
+  recCleaning.textContent = cleaningTotal > 1000
+    ? "⚠️ Optimize cleaning costs"
+    : "✅ Efficient costs";
 
   renderCharts(totalEnergy, totalWater, officeTotal, cleaningTotal);
 }
@@ -154,50 +139,46 @@ function renderCharts(energy, water, office, cleaning) {
   if (energyChart) energyChart.destroy();
   if (expenseChart) expenseChart.destroy();
 
-  energyChart = new Chart(document.getElementById("energyChart"), {
+  const energyCanvas = document.getElementById("energyChart");
+  const expenseCanvas = document.getElementById("expenseChart");
+
+  energyChart = new Chart(energyCanvas, {
     type: "bar",
     data: {
       labels: ["Energy", "Water"],
       datasets: [{
         data: [energy, water],
-        backgroundColor: ["#22c55e", "#38bdf8"],
-        borderRadius: 6
+        backgroundColor: ["#22c55e", "#38bdf8"]
       }]
     },
     options: {
       responsive: true,
-      maintainAspectRatio: true,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { ticks: { color: "#94a3b8" }, grid: { display: false } },
-        y: { ticks: { color: "#94a3b8" }, grid: { color: "rgba(255,255,255,0.05)" } }
+      plugins: {
+        tooltip: { enabled: true }
+      },
+      onClick: (e, elements) => {
+        if (elements.length > 0) {
+          const i = elements[0].index;
+          alert(["Energy", "Water"][i]);
+        }
       }
     }
   });
 
-  expenseChart = new Chart(document.getElementById("expenseChart"), {
+  expenseChart = new Chart(expenseCanvas, {
     type: "doughnut",
     data: {
       labels: ["Office", "Cleaning"],
       datasets: [{
         data: [office, cleaning],
-        backgroundColor: ["#facc15", "#f472b6"],
-        borderWidth: 0
+        backgroundColor: ["#facc15", "#f472b6"]
       }]
     },
     options: {
       responsive: true,
-      maintainAspectRatio: true,
-      cutout: "60%",
-      plugins: {
-        legend: { labels: { color: "#cbd5f5" } }
-      }
+      cutout: "60%"
     }
   });
-}
-
-function toggleInstructions() {
-  document.getElementById("instructions").classList.toggle("hidden");
 }
 </script>
 
