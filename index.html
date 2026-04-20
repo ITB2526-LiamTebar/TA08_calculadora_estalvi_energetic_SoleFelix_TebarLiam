@@ -53,20 +53,27 @@
           <rect x="2" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/>
           <rect x="9" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/>
         </svg>
-        Calculations
+        <span class="tab-btn-text">Calculations</span>
       </button>
       <button class="tab-btn" onclick="switchTab('charts')" id="tab-charts">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
           <polyline points="2,12 6,7 9,10 14,4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
         </svg>
-        Charts
+        <span class="tab-btn-text">Charts</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('reduction')" id="tab-reduction">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <polyline points="2,10 6,6 9,8 14,3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <line x1="2" y1="13" x2="14" y2="13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        <span class="tab-btn-text">−30% Plan</span>
       </button>
       <button class="tab-btn" onclick="switchTab('optimisation')" id="tab-optimisation">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
           <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.3"/>
           <polyline points="5.5,8 7.5,10 10.5,6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
         </svg>
-        Optimisation
+        <span class="tab-btn-text">Optimisation</span>
       </button>
     </div>
 
@@ -92,18 +99,23 @@
         <div class="chart-wrap">
           <canvas id="monthlyChart" role="img" aria-label="Monthly estimated consumption chart by indicator"></canvas>
         </div>
-        <div class="chart-legend">
-          <span class="legend-item"><span class="legend-dot active"></span>Academic months (Sep–Jun)</span>
-          <span class="legend-item"><span class="legend-dot inactive"></span>Summer break (Jul–Aug)</span>
+        <div class="chart-legend" id="chartLegend">
+          <span class="legend-item"><span class="legend-dot" style="background:#1a5c3a"></span>Academic month</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#b85c1a"></span>Holiday period</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#d4d2cc"></span>Summer break</span>
         </div>
       </div>
 
       <div class="section-label" style="margin-top:28px">Annual breakdown by category</div>
       <div class="chart-section">
-        <div class="chart-wrap" style="height:200px">
-          <canvas id="breakdownChart" role="img" aria-label="Annual cost breakdown by category"></canvas>
-        </div>
+        <div class="breakdown-bars" id="breakdownBars"></div>
+        <div class="breakdown-total" id="breakdownTotal"></div>
       </div>
+    </div>
+
+    <!-- TAB: REDUCTION PLAN -->
+    <div class="tab-panel hidden" id="panel-reduction">
+      <div id="reductionContent"></div>
     </div>
 
     <!-- TAB: OPTIMISATION -->
@@ -191,7 +203,7 @@
       <div class="plan-grid">
         <div class="plan-year">
           <div class="plan-year-label">Year 1</div>
-          <div class="plan-year-title">Awareness & quick wins</div>
+          <div class="plan-year-title">Awareness &amp; quick wins</div>
           <div class="plan-items">
             <div class="plan-item"><span class="plan-dot"></span>LED lighting replacement throughout the building</div>
             <div class="plan-item"><span class="plan-dot"></span>Paper-zero policy enforced for all departments</div>
@@ -213,7 +225,7 @@
         </div>
         <div class="plan-year">
           <div class="plan-year-label">Year 3</div>
-          <div class="plan-year-title">Circular economy & review</div>
+          <div class="plan-year-title">Circular economy &amp; review</div>
           <div class="plan-items">
             <div class="plan-item"><span class="plan-dot"></span>WEEE circular reuse programme for old devices</div>
             <div class="plan-item"><span class="plan-dot"></span>Green coding training integrated in curriculum</div>
