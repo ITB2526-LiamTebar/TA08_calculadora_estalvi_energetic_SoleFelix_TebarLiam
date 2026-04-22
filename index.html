@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ca">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,11 +27,9 @@
     </button>
   </div>
 
-  <!-- HEADER -->
   <h1>Energy Calculator</h1>
   <p class="subtitle">Phase 3 · Institut Tecnològic de Barcelona · ASIX 1D</p>
 
-  <!-- STATUS BAR -->
   <div class="status-bar">
     <div class="status-dot loading" id="statusDot"></div>
     <span id="statusText">Loading data from GitHub…</span>
@@ -40,204 +38,265 @@
   <!-- MAIN CONTENT -->
   <div id="mainContent" style="display:none">
 
-    <!-- SUMMARY METRICS -->
     <div class="section-label">Overview</div>
     <div class="metrics-grid" id="metricsGrid"></div>
 
-    <!-- TAB NAV -->
+    <!-- TABS -->
     <div class="tab-bar">
-      <button class="tab-btn active" onclick="switchTab('calculations')" id="tab-calculations">
+
+      <!-- Simulator -->
+      <button class="tab-btn active" onclick="switchTab('simulator')" id="tab-simulator">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
           <rect x="2" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/>
           <rect x="9" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/>
           <rect x="2" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/>
           <rect x="9" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/>
         </svg>
-        <span class="tab-btn-text">Calculations</span>
+        <span class="tab-btn-text">Simulador</span>
       </button>
+
+      <!-- Charts -->
       <button class="tab-btn" onclick="switchTab('charts')" id="tab-charts">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
           <polyline points="2,12 6,7 9,10 14,4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
         </svg>
-        <span class="tab-btn-text">Charts</span>
+        <span class="tab-btn-text">Gràfics</span>
       </button>
-      <button class="tab-btn" onclick="switchTab('reduction')" id="tab-reduction">
+
+      <!-- Càlculs -->
+      <button class="tab-btn" onclick="switchTab('calcs')" id="tab-calcs">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-          <polyline points="2,10 6,6 9,8 14,3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-          <line x1="2" y1="13" x2="14" y2="13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          <rect x="2" y="2" width="12" height="12" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
+          <line x1="5" y1="6" x2="11" y2="6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          <line x1="5" y1="9" x2="9" y2="9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          <line x1="5" y1="12" x2="8" y2="12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
         </svg>
-        <span class="tab-btn-text">−30% Plan</span>
+        <span class="tab-btn-text">Càlculs</span>
       </button>
-      <button class="tab-btn" onclick="switchTab('optimisation')" id="tab-optimisation">
+
+      <!-- Cronograma -->
+      <button class="tab-btn" onclick="switchTab('cronograma')" id="tab-cronograma">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-          <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.3"/>
-          <polyline points="5.5,8 7.5,10 10.5,6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <rect x="2" y="3" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
+          <line x1="5" y1="1.5" x2="5" y2="4.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          <line x1="11" y1="1.5" x2="11" y2="4.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          <line x1="2" y1="7" x2="14" y2="7" stroke="currentColor" stroke-width="1.3"/>
+          <circle cx="5.5" cy="10" r="1" fill="currentColor"/>
+          <circle cx="9" cy="10" r="1" fill="currentColor"/>
         </svg>
-        <span class="tab-btn-text">Optimisation</span>
+        <span class="tab-btn-text">Cronograma</span>
       </button>
+
     </div>
 
-    <!-- TAB: CALCULATIONS -->
-    <div class="tab-panel" id="panel-calculations">
-      <div class="section-label">8 key indicators</div>
-      <div class="calc-grid" id="calcGrid"></div>
+    <!-- ── PANEL: SIMULATOR ─────────────────────────────────────────── -->
+    <div class="tab-panel" id="panel-simulator">
+      <div id="simContent"></div>
     </div>
 
-    <!-- TAB: CHARTS -->
+    <!-- ── PANEL: CHARTS ──────────────────────────────────────────────── -->
     <div class="tab-panel hidden" id="panel-charts">
-      <div class="section-label">Monthly estimated consumption</div>
+      <div class="section-label">Consum mensual estimat</div>
       <div class="chart-section">
         <div class="chart-controls">
-          <label>Indicator:</label>
+          <label>Indicador:</label>
           <select id="chartIndicator" onchange="renderChart()">
-            <option value="electricity">Electricity (kWh)</option>
-            <option value="water">Water (m³)</option>
-            <option value="supplies">Office supplies (€)</option>
-            <option value="cleaning">Cleaning products (€)</option>
+            <option value="electricity">Electricitat (kWh)</option>
+            <option value="water">Aigua (m³)</option>
+            <option value="supplies">Consumibles (€)</option>
+            <option value="cleaning">Neteja (€)</option>
           </select>
         </div>
         <div class="chart-wrap">
-          <canvas id="monthlyChart" role="img" aria-label="Monthly estimated consumption chart by indicator"></canvas>
+          <canvas id="monthlyChart" role="img" aria-label="Monthly estimated consumption chart"></canvas>
         </div>
         <div class="chart-legend" id="chartLegend">
-          <span class="legend-item"><span class="legend-dot" style="background:#1a5c3a"></span>Academic month</span>
-          <span class="legend-item"><span class="legend-dot" style="background:#b85c1a"></span>Holiday period</span>
-          <span class="legend-item"><span class="legend-dot" style="background:#d4d2cc"></span>Summer break</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#1a5c3a"></span>Mes lectiu</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#b85c1a"></span>Vacances</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#d4d2cc"></span>Estiu</span>
         </div>
       </div>
 
-      <div class="section-label" style="margin-top:28px">Annual breakdown by category</div>
+      <div class="section-label" style="margin-top:28px">Desglossament anual per categoria</div>
       <div class="chart-section">
         <div class="breakdown-bars" id="breakdownBars"></div>
         <div class="breakdown-total" id="breakdownTotal"></div>
       </div>
     </div>
 
-    <!-- TAB: REDUCTION PLAN -->
-    <div class="tab-panel hidden" id="panel-reduction">
-      <div id="reductionContent"></div>
+    <!-- ── PANEL: CÀLCULS ──────────────────────────────────────────────── -->
+    <div class="tab-panel hidden" id="panel-calcs">
+      <div class="section-label">Càlculs per periode</div>
+      <div class="calc-grid" id="calcGrid"></div>
     </div>
 
-    <!-- TAB: OPTIMISATION -->
-    <div class="tab-panel hidden" id="panel-optimisation">
-      <div class="section-label">How to reduce consumption per indicator</div>
-      <div class="tips-grid">
-        <div class="tip-card">
-          <div class="tip-header">
-            <div class="tip-icon elec">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <polyline points="9,2 5,9 8,9 7,14 11,7 8,7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-              </svg>
+    <!-- ── PANEL: CRONOGRAMA ──────────────────────────────────────────── -->
+    <div class="tab-panel hidden" id="panel-cronograma">
+
+      <div class="section-label">Pla de reducció a 3 anys — objectiu −30%</div>
+
+      <!-- Timeline visual -->
+      <div class="timeline">
+        <div class="tl-line"></div>
+
+        <!-- YEAR 1 -->
+        <div class="tl-year">
+          <div class="tl-dot y1"></div>
+          <div class="tl-card">
+            <div class="tl-year-tag y1">Any 1 &nbsp;·&nbsp; 2025–2026</div>
+            <div class="tl-year-title">Conscienciació i guanys ràpids</div>
+            <div class="tl-target-row">
+              <span class="tl-target-label">Objectiu reducció</span>
+              <span class="tl-target-val y1">−10%</span>
             </div>
-            <div class="tip-title">Electricity</div>
+            <div class="tl-measures">
+              <div class="tl-measure-group">
+                <div class="tl-mg-header elec">⚡ Energia</div>
+                <div class="tl-item"><span class="tl-dot-sm"></span>Virtualització Proxmox (−15% consum servidors)</div>
+                <div class="tl-item"><span class="tl-dot-sm"></span>Scripts d'auto-apagat nocturn (−10%)</div>
+                <div class="tl-item"><span class="tl-dot-sm"></span>Inici renovació progressiva LED (−8%)</div>
+              </div>
+              <div class="tl-measure-group">
+                <div class="tl-mg-header water">💧 Aigua</div>
+                <div class="tl-item"><span class="tl-dot-sm"></span>Instal·lació airejadors i difusors (−20%)</div>
+                <div class="tl-item"><span class="tl-dot-sm"></span>Reparació de fuites detectades (−10%)</div>
+              </div>
+              <div class="tl-measure-group">
+                <div class="tl-mg-header supplies">📄 Consumibles</div>
+                <div class="tl-item"><span class="tl-dot-sm"></span>Digitalització d'exàmens i entregues (−40%)</div>
+                <div class="tl-item"><span class="tl-dot-sm"></span>Sistema de quotes d'impressió (−15%)</div>
+              </div>
+              <div class="tl-measure-group">
+                <div class="tl-mg-header cleaning">🧹 Neteja</div>
+                <div class="tl-item"><span class="tl-dot-sm"></span>Compra a granel i farciment d'envasos (−30%)</div>
+              </div>
+            </div>
+            <div class="tl-kpi-row">
+              <div class="tl-kpi"><div class="tl-kpi-val">−10%</div><div class="tl-kpi-label">Cost total</div></div>
+              <div class="tl-kpi"><div class="tl-kpi-val">−15%</div><div class="tl-kpi-label">Electricitat</div></div>
+              <div class="tl-kpi"><div class="tl-kpi-val">−25%</div><div class="tl-kpi-label">Consumibles</div></div>
+              <div class="tl-kpi"><div class="tl-kpi-val">−20%</div><div class="tl-kpi-label">Aigua</div></div>
+            </div>
           </div>
-          <ul class="tip-list">
-            <li>Install motion sensors in classrooms to auto-cut lights.</li>
-            <li>Power off all equipment outside school hours.</li>
-            <li>Replace fluorescent fixtures with LED lighting.</li>
-            <li>Apply <strong>green coding</strong> principles: optimise software to reduce CPU load and server energy usage.</li>
-          </ul>
-          <div class="tip-saving">Potential saving: <span>~20–30%</span></div>
         </div>
 
-        <div class="tip-card">
-          <div class="tip-header">
-            <div class="tip-icon water">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M8 2C8 2 3 7.5 3 10.5a5 5 0 0010 0C13 7.5 8 2 8 2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" fill="none"/>
-              </svg>
+        <!-- YEAR 2 -->
+        <div class="tl-year">
+          <div class="tl-dot y2"></div>
+          <div class="tl-card">
+            <div class="tl-year-tag y2">Any 2 &nbsp;·&nbsp; 2026–2027</div>
+            <div class="tl-year-title">Millores d'infraestructura</div>
+            <div class="tl-target-row">
+              <span class="tl-target-label">Objectiu reducció acumulat</span>
+              <span class="tl-target-val y2">−20%</span>
             </div>
-            <div class="tip-title">Water</div>
+            <div class="tl-measures">
+              <div class="tl-measure-group">
+                <div class="tl-mg-header elec">⚡ Energia</div>
+                <div class="tl-item"><span class="tl-dot-sm"></span>Recondicionament servidors antics (−5%)</div>
+                <div class="tl-item"><span class="tl-dot-sm"></span>Instal·lació sensors de moviment a les aules</div>
+                <div class="tl-item"><span class="tl-dot-sm"></span>Mesura intel·ligent (smart metering) en temps real</div>
+              </div>
+              <div class="tl-measure-group">
+                <div class="tl-mg-header water">💧 Aigua</div>
+                <div class="tl-item"><span class="tl-dot-sm"></span>Aprofitament d'aigües pluvials per a reg (−8%)</div>
+                <div class="tl-item"><span class="tl-dot-sm"></span>Pla de substitució de polsadors (−5%)</div>
+              </div>
+              <div class="tl-measure-group">
+                <div class="tl-mg-header supplies">📄 Consumibles</div>
+                <div class="tl-item"><span class="tl-dot-sm"></span>Compra paper 100% reciclat (−10%)</div>
+                <div class="tl-item"><span class="tl-dot-sm"></span>Centralització de compres per evitar sobre-estoc</div>
+              </div>
+              <div class="tl-measure-group">
+                <div class="tl-mg-header cleaning">🧹 Neteja</div>
+                <div class="tl-item"><span class="tl-dot-sm"></span>Substitució per productes eco-concentrats (−20%)</div>
+                <div class="tl-item"><span class="tl-dot-sm"></span>Draps de microfibra reutilitzables (−15%)</div>
+              </div>
+            </div>
+            <div class="tl-kpi-row">
+              <div class="tl-kpi"><div class="tl-kpi-val">−20%</div><div class="tl-kpi-label">Cost total</div></div>
+              <div class="tl-kpi"><div class="tl-kpi-val">−28%</div><div class="tl-kpi-label">Electricitat</div></div>
+              <div class="tl-kpi"><div class="tl-kpi-val">−35%</div><div class="tl-kpi-label">Consumibles</div></div>
+              <div class="tl-kpi"><div class="tl-kpi-val">−30%</div><div class="tl-kpi-label">Aigua</div></div>
+            </div>
           </div>
-          <ul class="tip-list">
-            <li>Fit aerators on all taps to reduce flow without loss of pressure.</li>
-            <li>Collect rainwater for irrigation of green areas.</li>
-            <li>Implement a periodic leak-detection programme.</li>
-            <li>Install dual-flush mechanisms in all toilets.</li>
-          </ul>
-          <div class="tip-saving">Potential saving: <span>~15–25%</span></div>
         </div>
 
-        <div class="tip-card">
-          <div class="tip-header">
-            <div class="tip-icon supplies">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <rect x="3" y="2" width="10" height="12" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
-                <line x1="5.5" y1="6" x2="10.5" y2="6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-                <line x1="5.5" y1="8.5" x2="10.5" y2="8.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-                <line x1="5.5" y1="11" x2="8.5" y2="11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-              </svg>
+        <!-- YEAR 3 -->
+        <div class="tl-year">
+          <div class="tl-dot y3"></div>
+          <div class="tl-card">
+            <div class="tl-year-tag y3">Any 3 &nbsp;·&nbsp; 2027–2028</div>
+            <div class="tl-year-title">Economia circular i revisió</div>
+            <div class="tl-target-row">
+              <span class="tl-target-label">Objectiu reducció acumulat</span>
+              <span class="tl-target-val y3">−30%</span>
             </div>
-            <div class="tip-title">Office supplies</div>
+            <div class="tl-measures">
+              <div class="tl-measure-group">
+                <div class="tl-mg-header elec">⚡ Energia</div>
+                <div class="tl-item"><span class="tl-dot-sm"></span>Formació en green coding integrada al currículum</div>
+                <div class="tl-item"><span class="tl-dot-sm"></span>Auditoria energètica anual amb informe públic</div>
+              </div>
+              <div class="tl-measure-group">
+                <div class="tl-mg-header water">💧 Aigua</div>
+                <div class="tl-item"><span class="tl-dot-sm"></span>Revisió i optimització de tots els sistemes instal·lats</div>
+                <div class="tl-item"><span class="tl-dot-sm"></span>Programa d'educació ambiental per a l'alumnat</div>
+              </div>
+              <div class="tl-measure-group">
+                <div class="tl-mg-header supplies">📄 Consumibles</div>
+                <div class="tl-item"><span class="tl-dot-sm"></span>Devolució de tòners al fabricant (−5%)</div>
+                <div class="tl-item"><span class="tl-dot-sm"></span>Programa RAEE circular: reutilització de dispositius</div>
+              </div>
+              <div class="tl-measure-group">
+                <div class="tl-mg-header cleaning">🧹 Neteja</div>
+                <div class="tl-item"><span class="tl-dot-sm"></span>Sistema de dosificació automàtica (−10%)</div>
+                <div class="tl-item"><span class="tl-dot-sm"></span>Revisió de KPIs i nous objectius triennals</div>
+              </div>
+            </div>
+            <div class="tl-kpi-row">
+              <div class="tl-kpi"><div class="tl-kpi-val">−30%</div><div class="tl-kpi-label">Cost total</div></div>
+              <div class="tl-kpi"><div class="tl-kpi-val">−30%</div><div class="tl-kpi-label">Electricitat</div></div>
+              <div class="tl-kpi"><div class="tl-kpi-val">−40%</div><div class="tl-kpi-label">Consumibles</div></div>
+              <div class="tl-kpi"><div class="tl-kpi-val">−25%</div><div class="tl-kpi-label">Aigua</div></div>
+            </div>
           </div>
-          <ul class="tip-list">
-            <li>"Paper-zero" policy: digitise all submissions and handouts.</li>
-            <li>Set double-sided printing as the default on all printers.</li>
-            <li>Reuse single-sided draft paper for internal documents.</li>
-            <li>Centralise purchasing to avoid unnecessary over-stocking.</li>
-          </ul>
-          <div class="tip-saving">Potential saving: <span>~30–40%</span></div>
         </div>
 
-        <div class="tip-card">
-          <div class="tip-header">
-            <div class="tip-icon cleaning">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M5 13V7l3-5 3 5v6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                <line x1="3" y1="13" x2="13" y2="13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-              </svg>
-            </div>
-            <div class="tip-title">Cleaning products</div>
-          </div>
-          <ul class="tip-list">
-            <li>Switch to certified eco-label products (EU Ecolabel / Nordic Swan).</li>
-            <li>Use automatic dosing dispensers to prevent waste.</li>
-            <li>Purchase concentrated products to reduce packaging waste.</li>
-            <li>Schedule cleaning outside peak-activity hours for efficiency.</li>
-          </ul>
-          <div class="tip-saving">Potential saving: <span>~10–20%</span></div>
+      </div><!-- /timeline -->
+
+      <!-- ODS reference -->
+      <div class="section-label" style="margin-top:32px">Alineació amb els ODS</div>
+      <div class="ods-grid">
+        <div class="ods-item">
+          <div class="ods-num">ODS 4</div>
+          <div class="ods-text">Educació de qualitat — green coding al currículum</div>
+        </div>
+        <div class="ods-item">
+          <div class="ods-num">ODS 6</div>
+          <div class="ods-text">Aigua neta — reducció consum i aprofitament pluvial</div>
+        </div>
+        <div class="ods-item">
+          <div class="ods-num">ODS 7</div>
+          <div class="ods-text">Energia neta — LED, virtualització, smart metering</div>
+        </div>
+        <div class="ods-item">
+          <div class="ods-num">ODS 12</div>
+          <div class="ods-text">Producció responsable — RAEE circular, paper reciclat</div>
+        </div>
+        <div class="ods-item">
+          <div class="ods-num">ODS 13</div>
+          <div class="ods-text">Acció climàtica — reducció CO₂, auditoria ESG anual</div>
+        </div>
+        <div class="ods-item">
+          <div class="ods-num">ODS 17</div>
+          <div class="ods-text">Aliances — col·laboració entre departaments i fabricants</div>
         </div>
       </div>
 
-      <div class="section-label" style="margin-top:32px">3-year reduction plan (−30% target)</div>
-      <div class="plan-grid">
-        <div class="plan-year">
-          <div class="plan-year-label">Year 1</div>
-          <div class="plan-year-title">Awareness &amp; quick wins</div>
-          <div class="plan-items">
-            <div class="plan-item"><span class="plan-dot"></span>LED lighting replacement throughout the building</div>
-            <div class="plan-item"><span class="plan-dot"></span>Paper-zero policy enforced for all departments</div>
-            <div class="plan-item"><span class="plan-dot"></span>Leak audit and tap aerator installation</div>
-            <div class="plan-item"><span class="plan-dot"></span>Switch to eco-certified cleaning products</div>
-          </div>
-          <div class="plan-target">Target: <strong>−10%</strong></div>
-        </div>
-        <div class="plan-year">
-          <div class="plan-year-label">Year 2</div>
-          <div class="plan-year-title">Infrastructure upgrades</div>
-          <div class="plan-items">
-            <div class="plan-item"><span class="plan-dot"></span>Motion sensor installation in all classrooms</div>
-            <div class="plan-item"><span class="plan-dot"></span>Rainwater collection system for irrigation</div>
-            <div class="plan-item"><span class="plan-dot"></span>Smart metering for real-time consumption tracking</div>
-            <div class="plan-item"><span class="plan-dot"></span>Centralised procurement to reduce over-ordering</div>
-          </div>
-          <div class="plan-target">Target: <strong>−20%</strong></div>
-        </div>
-        <div class="plan-year">
-          <div class="plan-year-label">Year 3</div>
-          <div class="plan-year-title">Circular economy &amp; review</div>
-          <div class="plan-items">
-            <div class="plan-item"><span class="plan-dot"></span>WEEE circular reuse programme for old devices</div>
-            <div class="plan-item"><span class="plan-dot"></span>Green coding training integrated in curriculum</div>
-            <div class="plan-item"><span class="plan-dot"></span>Annual ESG audit with public results report</div>
-            <div class="plan-item"><span class="plan-dot"></span>Review KPIs and set new 3-year targets</div>
-          </div>
-          <div class="plan-target">Target: <strong>−30%</strong></div>
-        </div>
-      </div>
-    </div>
+    </div><!-- /panel-cronograma -->
 
-  </div>
+  </div><!-- /mainContent -->
 
   <!-- ERROR STATE -->
   <div id="errorSection" style="display:none">
@@ -245,9 +304,7 @@
       <div class="nd-icon">⚠</div>
       <div id="errorMsg">Could not load data.</div>
       <div class="nd-sub">Check your connection or that the repository is public.</div>
-      <button class="load-btn" style="margin-top:12px;font-size:13px" onclick="autoLoad()">
-        Retry
-      </button>
+      <button class="load-btn" style="margin-top:12px;font-size:13px" onclick="autoLoad()">Retry</button>
     </div>
   </div>
 
